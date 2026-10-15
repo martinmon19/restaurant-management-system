@@ -1,0 +1,1 @@
+"""Reading and writing the JSON files (restaurant data and group requests)."""

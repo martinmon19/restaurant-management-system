@@ -1,0 +1,10 @@
+{
+  "name": "Casa Pepe",
+  "capacity": 50,
+  "max_tables": 5,
+  "menu": {
+    "Callos a la madrileña": 12,
+    "Bocata de calamares": 5,
+    "Cocido madrileño": 20
+  }
+}

@@ -1,0 +1,1 @@
+"""Core logic of the restaurant: tables, orders, bills and menu."""
