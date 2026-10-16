@@ -23,8 +23,23 @@ def load_groups(path):
     return groups
 
 
+def save_menu(restaurant, path):
+    """Save the restaurant's basic info and menu back to the JSON file."""
+    data = {
+        "name": restaurant["name"],
+        "capacity": restaurant["capacity"],
+        "max_tables": restaurant["max_tables"],
+        "menu": restaurant["menu"],
+    }
+
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+
 if __name__ == "__main__":
     r = load_restaurant("data/restaurant.json")
     print(r)
     g = load_groups("tables/groups1.json")
     print(g)
+    save_menu(r, "data/restaurant.json")
+    print("Menu saved")
