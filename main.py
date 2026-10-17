@@ -40,6 +40,22 @@ def main():
             except json.JSONDecodeError:
                 print('Im sorry, incorrect JSON format')
         
+        #
+        if option == 2:
+            if restaurant is None:
+                print('You must load the restaurant first')
+                continue
+            groups_path = input('Enter the group file path: ')
+            
+            try:
+                groups = json_io.load_groups(groups_path)
+            except FileNotFoundError:
+                print('Group file not found.')               
+            except json.JSONDecodeError:
+                print('Invalid JSON format in the group file.')
+            
+            
+        
         # Print the status of the restaurant
         if option == 6:
             if restaurant is None:
@@ -71,9 +87,9 @@ def main():
             
                 
                 
-            
+          
 main()          
-            
+          
                     
       
     
