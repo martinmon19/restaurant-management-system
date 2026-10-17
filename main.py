@@ -24,8 +24,7 @@ def main():
             option = int(input('What do you choose?: '))
             if option < 1 or option > 7:
                 print('Please choose an option from 1 to 7.')
-            if option == 7:
-                break
+
         except ValueError:
             print('Please enter a valid number')
             continue
@@ -41,12 +40,12 @@ def main():
             except json.JSONDecodeError:
                 print('Im sorry, incorrect JSON format')
         
-        #
+        # Print the status of the restaurant
         if option == 6:
             if restaurant is None:
                 print('You must load the restaurant first')
                 continue
-            #Print the status of the restaurant
+    
             print(f' You have selected restaurant: {restaurant['name']}')
             print(f' The maximum capacity is: {restaurant['capacity']}')
             print(f' The maximum number of tables is: {restaurant['max_tables']}')
@@ -58,12 +57,22 @@ def main():
             
             for services in restaurant['tables']:
                 print(services) 
-            
+        
+        # User wants to exit and save the restaurant, also what to do in case of name error    
+        if option == 7:
+            if restaurant is None:
+                break
+            try:
+                json_io.save_menu(restaurant, restaurant_path)
+            except OSError:
+                print('There is a writing or acces error')
+                option = 0
+                
             
                 
                 
             
-main()            
+main()          
             
                     
       
