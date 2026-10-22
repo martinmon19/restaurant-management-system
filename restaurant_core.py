@@ -36,3 +36,13 @@ def take_order(table,menu):
         orders.append(customer_orders)
     table["orders"] = orders     
     table["status"] = "ordered"
+
+def calculate_bill(table,menu):
+    bill = 0
+    for customer_orders in table["orders"]:
+        for dish in customer_orders: 
+         bill = bill + menu[dish]
+    table["bill"] = bill
+
+    return table["bill"]
+
