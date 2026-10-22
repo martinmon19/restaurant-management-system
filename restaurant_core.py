@@ -10,10 +10,29 @@ def seat_group(restaurant, customers):
     else:
         return None
 
-if __name__ == "__main__":
-    import json_io
-    restaurant = json_io.load_restaurant("data/restaurant.json")
-    print(seat_group(restaurant, 4))
-    print(seat_group(restaurant, 2))
-    print(seat_group(restaurant, 60))
-    print(restaurant["occupancy"], restaurant["next_table_num"])
+def take_order(table,menu):
+    menu_upper = {}
+    for dish in menu:
+        menu_upper[dish.upper()] = dish
+
+    orders = []
+    
+
+    for mesa in range (table["customers"]):
+      
+        customer_orders = []
+        dish_ask = str(input("What do you want to eat? "))
+
+        while dish_ask.upper() != "DONE" or len(customer_orders) < 1:
+           
+           if dish_ask.upper() == "DONE":
+             dish_ask = str(input("You must order at least one dish: "))  
+           
+           elif dish_ask.upper() in menu_upper:
+               customer_orders.append(menu_upper[dish_ask.upper()])
+               dish_ask = str(input("What do you want to eat? "))
+           else:
+               dish_ask = str(input("You have to choose an option from the menu: "))
+        orders.append(customer_orders)
+    table["orders"] = orders     
+    table["status"] = "ordered"
