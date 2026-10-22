@@ -3,7 +3,7 @@ def seat_group(restaurant, customers):
 
     if restaurant["occupancy"] + customers <= restaurant["capacity"] and (("max_tables" not in restaurant) or (restaurant["max_tables"] > len(restaurant["tables"]))): 
         table= {"table_num" : ((restaurant["next_table_num"])) , "customers" : customers, "status" : "seated", "orders":[]}
-        restaurant["tables"].append
+        restaurant["tables"].append(table)
         restaurant["occupancy"] = restaurant["occupancy"] + customers
         restaurant["next_table_num"] = restaurant["next_table_num"] + 1
         return table
@@ -53,3 +53,10 @@ def add_or_update_dish(restaurant, name, price):
             return False
     restaurant["menu"][name] = price
     return True
+
+def charge_and_release(restaurant, table):
+    bill = calculate_bill(table, restaurant["menu"])
+    restaurant["earnings"] = restaurant["earnings"] + bill
+    restaurant["occupancy"] = restaurant["occupancy"] - table["customers"]
+    restaurant["tables"].remove(table)
+    return bill
