@@ -46,3 +46,10 @@ def calculate_bill(table,menu):
 
     return table["bill"]
 
+def add_or_update_dish(restaurant, name, price):
+    for dish in restaurant["menu"]:
+        if dish.upper() == name.upper():
+            restaurant["menu"][dish] = price
+            return False
+    restaurant["menu"][name] = price
+    return True
