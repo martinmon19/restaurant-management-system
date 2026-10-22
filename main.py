@@ -40,21 +40,30 @@ def main():
             except json.JSONDecodeError:
                 print('Im sorry, incorrect JSON format')
         
-        # Add group request loading and handle file errors
+        # Load group requests and try to seat each group
         if option == 2:
             if restaurant is None:
                 print('You must load the restaurant first')
                 continue
-            groups_path = input('Enter the group file path: ')
-            
+            groups_path = input('Enter the group file path (e.g. tables/groups1.json): ')
+
             try:
                 groups = json_io.load_groups(groups_path)
             except FileNotFoundError:
-                print('Group file not found.')               
+                print('Group file not found.')
+                continue
             except json.JSONDecodeError:
                 print('Invalid JSON format in the group file.')
-        
-        #Taking an order
+                continue
+
+            for group in groups:
+                table = restaurant_core.seat_group(restaurant, group['customers'])
+                if table is None:
+                    print(f"Group of {group['customers']} does not fit (capacity or max tables reached).")
+                else:
+                    print(f"Group of {group['customers']} seated at table {table['table_num']}.")
+
+         # Take the order of a seated table
         if option == 3:
             if restaurant is None:
                 print('You must load the restaurant first')
@@ -63,7 +72,7 @@ def main():
             selected_table = None
             for table in restaurant['tables']:
                 if table['status'] == 'seated':
-                    print(table)
+                    print(f"  Table {table['table_num']} - {table['customers']} customers")
                     found_table = True
             if found_table is False:
                 print('There are not any tables to be served')
@@ -77,12 +86,19 @@ def main():
                 for table in restaurant['tables']:
                     if (table['table_num'] == table_serve) and table['status'] == 'seated':
                         selected_table = table
-                if selected_table is None: 
+                if selected_table is None:
                     print('That table is not valid')
                     continue
                 break
-        
-        #Charging and realising tables    
+
+            print('Menu:')
+            for dish in restaurant['menu']:
+                print(f"  - {dish}: {restaurant['menu'][dish]}")
+            print("Each customer orders dish by dish and types 'done' when finished.")
+            restaurant_core.take_order(selected_table, restaurant['menu'])
+            print(f"Order taken for table {selected_table['table_num']}.")
+
+        # Charge and release a table that has already ordered
         if option == 4:
             if restaurant is None:
                 print('You must load the restaurant first')
@@ -91,7 +107,7 @@ def main():
             select_table = None
             for table in restaurant['tables']:
                 if table['status'] == 'ordered':
-                    print(table)
+                    print(f"  Table {table['table_num']} - {table['customers']} customers - orders: {table['orders']}")
                     pay_table = True
             if pay_table is False:
                 print('There are not any tables finished')
@@ -105,12 +121,15 @@ def main():
                 for table in restaurant['tables']:
                     if (table['table_num'] == table_pay) and table['status'] == 'ordered':
                         select_table = table
-                if select_table is None: 
+                if select_table is None:
                     print('That table is not valid')
                     continue
                 break
-            
-                
+
+            bill = restaurant_core.charge_and_release(restaurant, select_table)
+            print(f"Table {select_table['table_num']} charged: {bill}. Table released.")
+            print(f"Total earnings this evening: {restaurant['earnings']}")
+
         #Introducing new dishes in the menu
         if option == 5:
             if restaurant is None:
