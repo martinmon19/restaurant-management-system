@@ -34,7 +34,7 @@ def main():
             # Loading the restaurant and informing if there is any type of error
             try:
                 restaurant = json_io.load_restaurant(restaurant_path)
-                print('Restaurant loaded succesfully')
+                print('Restaurant loaded successfully')
             except FileNotFoundError:
                 print('Im sorry, we cannot find the file')    
             except json.JSONDecodeError:
@@ -147,41 +147,34 @@ def main():
             if restaurant is None:
                 print('You must load the restaurant first')
                 continue
-    
-            print(f' You have selected restaurant: {restaurant['name']}')
-            print(f' The maximum capacity is: {restaurant['capacity']}')
-            print(f' The maximum number of tables is: {restaurant['max_tables']}')
-            print(f' The curent occupancy is: {restaurant['occupancy']}')
-            print(f' Total earnings for the day are: {restaurant['earnings']}')
-            
-            for plates in restaurant['menu']:
-                print(plates, restaurant['menu'][plates])
-            
-            for services in restaurant['tables']:
-                print(services) 
-        
-        # User wants to exit and save the restaurant, also what to do in case of name error    
+
+            print(f"Restaurant: {restaurant['name']}")
+            print(f"Maximum capacity: {restaurant['capacity']}")
+            print(f"Maximum number of tables: {restaurant['max_tables']}")
+            print(f"Current occupancy: {restaurant['occupancy']}")
+            print(f"Total earnings this evening: {restaurant['earnings']}")
+
+            print('Menu:')
+            for dish in restaurant['menu']:
+                print(f"  - {dish}: {restaurant['menu'][dish]}")
+
+            print('Active tables:')
+            if len(restaurant['tables']) == 0:
+                print('  There are no active tables.')
+            for table in restaurant['tables']:
+                print(f"  Table {table['table_num']} - {table['customers']} customers - {table['status']} - orders: {table['orders']}")
+
+        # User wants to exit and save the restaurant, also what to do in case of a writing error
         if option == 7:
             if restaurant is None:
                 break
             try:
                 json_io.save_menu(restaurant, restaurant_path)
+                print('Menu saved. Goodbye!')
             except OSError:
-                print('There is a writing or acces error')
+                print('There is a writing or access error')
                 option = 0
-                
-            
-                
-                
-          
-main()          
-          
-                    
-      
-    
-        
-        
-        
-        
-    
-   
+
+
+if __name__ == "__main__":
+    main()
