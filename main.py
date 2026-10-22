@@ -152,15 +152,20 @@ def main():
                 if price <= 0:
                     print('The price must be greater than zero.')
                     continue
-                break    
-            if dish_name in restaurant['menu']:
-                if price == restaurant['menu'][dish_name]:
-                    print('This dish already has that price.')
-                    continue
-                else:
-                    print('This dish is already on the menu. Its price will be updated.')  
-                
-                
+                break  
+
+            is_new = restaurant_core.add_or_update_dish(restaurant, dish_name, price)
+            if is_new:
+                print(f"'{dish_name}' added to the menu at {price}.")
+            else:
+                print(f"'{dish_name}' was already on the menu. Price updated to {price}.")
+
+            try:
+                json_io.save_menu(restaurant, restaurant_path)
+                print('Menu saved to file.')
+            except OSError:
+                print('The menu could not be saved to the file.')
+
         # Print the status of the restaurant
         if option == 6:
             if restaurant is None:
