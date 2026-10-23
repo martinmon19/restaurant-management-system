@@ -86,6 +86,8 @@ table = {
 ## Design rules
 
 - **No global variables**: all data is passed through function arguments.
-- **Only `main.py` prints menu messages and validates user input** (with `try/except`); the other modules return values.
+- **Input validation**: `main.py` handles menu options, table selection, group data, and dish names and prices. `take_order()` in `restaurant_core.py` asks for and validates each customer's dishes.
 - Tables are numbered with `next_table_num`, so numbers are never repeated after a table is released.
 - The JSON file only stores the fixed restaurant data; the evening state (tables, occupancy, earnings) starts from zero every run.
+- The word `done` (case-insensitive) ends a customer's order and cannot be added as a dish through the CLI.
+- Bills use the menu prices in effect when the table is charged. Updating a price also affects active orders containing that dish.

@@ -166,6 +166,9 @@ def main():
                 if dish_name == '' or dish_name.isdigit():
                     print('Please enter a valid dish name.')
                     continue
+                if dish_name.lower() == 'done':
+                    print("'done' is reserved for finishing an order. Please choose another dish name.")
+                    continue
 
                 break   
             while True: #Same as dish name
