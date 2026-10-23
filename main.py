@@ -1,6 +1,7 @@
 """Command-line interface: shows the menu and calls the other modules."""
 # Importing the modules needed
 import json
+import math
 import json_io
 import restaurant_core
 
@@ -24,6 +25,7 @@ def main():
             option = int(input('What do you choose?: '))
             if option < 1 or option > 7:
                 print('Please choose an option from 1 to 7.')
+                continue
 
         except ValueError:
             print('Please enter a valid number')
@@ -39,13 +41,15 @@ def main():
                 print('Im sorry, we cannot find the file')    
             except json.JSONDecodeError:
                 print('Im sorry, incorrect JSON format')
+            except (OSError, UnicodeError):
+                print('The restaurant file could not be read.')
         
         # Load group requests and try to seat each group
         if option == 2:
             if restaurant is None:
                 print('You must load the restaurant first')
                 continue
-            groups_path = input('Enter the group file path (e.g. tables/groups1.json): ')
+            groups_path = input('Enter the group file path (e.g. tables/groups1.json): ').strip()
 
             try:
                 groups = json_io.load_groups(groups_path)
@@ -54,6 +58,28 @@ def main():
                 continue
             except json.JSONDecodeError:
                 print('Invalid JSON format in the group file.')
+                continue
+            except (OSError, UnicodeError):
+                print('The group file could not be read.')
+                continue
+
+            if not isinstance(groups, list):
+                print('The group file must contain a list of groups.')
+                continue
+
+            # Validate the whole batch before seating any groups.
+            valid_groups = True
+            for group in groups:
+                if not isinstance(group, dict):
+                    valid_groups = False
+                    break
+                customers = group.get('customers')
+                if type(customers) is not int or customers <= 0:
+                    valid_groups = False
+                    break
+
+            if not valid_groups:
+                print('Each group must contain a positive whole number of customers.')
                 continue
 
             for group in groups:
@@ -149,8 +175,8 @@ def main():
                     print('Please enter a valid number.')
                     continue
 
-                if price <= 0:
-                    print('The price must be greater than zero.')
+                if not math.isfinite(price) or price <= 0:
+                    print('The price must be a finite number greater than zero.')
                     continue
                 break  
 
