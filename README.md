@@ -80,6 +80,18 @@ table = {
 | `charge_and_release(restaurant, table)` | the bill; adds it to earnings, frees occupancy and removes the table |
 | `add_or_update_dish(restaurant, name, price)` | `True` if the dish is new, `False` if its price was updated |
 
+### `allergens.py` (novel feature)
+| Function | Returns |
+|---|---|
+| `parse_allergies(text)` | `(valid, invalid)` lists from a text like `"gluten, milk"`; `"none"` or empty gives no allergies |
+| `dish_allergens(allergens, dish)` | list of allergens of the dish, or `None` if there is no information |
+| `conflicting_allergens(allergens, dish, allergies)` | the customer's allergens contained in the dish |
+| `is_safe(allergens, dish, allergies)` | `True`/`False`; dishes without allergen information are **not** served to allergic customers |
+| `safe_dishes(allergens, menu, allergies)` | list of menu dishes that are safe |
+| `set_dish_allergens(allergens, dish, dish_allergen_list)` | nothing; stores the allergens of a dish |
+
+`allergens` is `restaurant["allergens"]` (`{dish: [allergens]}`, saved in the JSON). Allergens must belong to `OFFICIAL_ALLERGENS`, the 14 allergens of EU Regulation 1169/2011.
+
 ### `main.py`
 `main()` runs the menu loop. It owns the `restaurant` variable and passes it to every function.
 
@@ -91,3 +103,4 @@ table = {
 - The JSON file only stores the fixed restaurant data; the evening state (tables, occupancy, earnings) starts from zero every run.
 - The word `done` (case-insensitive) ends a customer's order and cannot be added as a dish through the CLI.
 - Bills use the menu prices in effect when the table is charged. Updating a price also affects active orders containing that dish.
+- **Allergens (novel feature)**: every dish declares its allergens from the official EU list. When an order is taken, each customer's allergies are asked and unsafe dishes are rejected. A dish without allergen information is never served to an allergic customer (safety first).

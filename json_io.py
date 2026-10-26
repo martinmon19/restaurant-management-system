@@ -11,6 +11,8 @@ def load_restaurant(path):
     restaurant["occupancy"] = 0
     restaurant["earnings"] = 0
     restaurant["next_table_num"] = 1
+    if "allergens" not in restaurant:
+        restaurant["allergens"] = {}
 
     return restaurant
 
@@ -30,6 +32,7 @@ def save_menu(restaurant, path):
         "capacity": restaurant["capacity"],
         "max_tables": restaurant["max_tables"],
         "menu": restaurant["menu"],
+        "allergens": restaurant["allergens"],
     }
 
     with open(path, "w", encoding="utf-8") as f:
