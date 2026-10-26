@@ -6,5 +6,19 @@
     "Callos a la madrileña": 12,
     "Bocata de calamares": 5,
     "Cocido madrileño": 20
+  },
+  "allergens": {
+    "Callos a la madrileña": [
+      "gluten",
+      "sulphites"
+    ],
+    "Bocata de calamares": [
+      "gluten",
+      "molluscs"
+    ],
+    "Cocido madrileño": [
+      "celery",
+      "gluten"
+    ]
   }
 }
