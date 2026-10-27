@@ -10,7 +10,7 @@ A command-line application that manages a restaurant during an evening of servic
 |---|---|---|
 | Pablo Montero | `json_io.py` | `feature/json-io` |
 | Javier | `restaurant_core.py` | `feature/core-logic` |
-| Martín | `main.py` | `feature/cli` |
+| Martín Monasterio| `main.py` | `feature/cli` |
 
 ## How to run
 
