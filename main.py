@@ -122,7 +122,7 @@ def main():
             for dish in restaurant['menu']:
                 print(f"  - {dish}: {restaurant['menu'][dish]}")
             print("Each customer orders dish by dish and types 'done' when finished.")
-            restaurant_core.take_order(selected_table, restaurant['menu'])
+            restaurant_core.take_order(selected_table, restaurant['menu'], restaurant['allergens'])
             print(f"Order taken for table {selected_table['table_num']}.")
 
         # Charge and release a table that has already ordered
