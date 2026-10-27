@@ -4,7 +4,7 @@ import json
 import math
 import json_io
 import restaurant_core
-
+import allergens
 
 # Run the main menu and coordinate the restaurant operations
 def main():
@@ -12,19 +12,20 @@ def main():
     option = 0
     restaurant_path = 'data/restaurant.json'
     restaurant = None #Making sure the user presses 1.Load restaurant first
-    while option != 7:
+    while option != 8:
         print('1. Load restaurant')
         print('2. Load new group requests')
         print('3. Take an order')
         print('4. Charge and release a table')
         print('5. Grow the menu')
         print('6. Check status')
-        print('7. Exit')
+        print('7. Allergen menu')
+        print('8. Exit')
         # Limiting the answers to a number between 1 and 7 and defining what to do in case another number is typed
         try:
             option = int(input('What do you choose?: '))
-            if option < 1 or option > 7:
-                print('Please choose an option from 1 to 7.')
+            if option < 1 or option > 8:
+                print('Please choose an option from 1 to 8.')
                 continue
 
         except ValueError:
@@ -121,7 +122,7 @@ def main():
             for dish in restaurant['menu']:
                 print(f"  - {dish}: {restaurant['menu'][dish]}")
             print("Each customer orders dish by dish and types 'done' when finished.")
-            restaurant_core.take_order(selected_table, restaurant['menu'])
+            restaurant_core.take_order(selected_table, restaurant['menu'], restaurant['allergens'])
             print(f"Order taken for table {selected_table['table_num']}.")
 
         # Charge and release a table that has already ordered
@@ -182,12 +183,30 @@ def main():
                     print('The price must be a finite number greater than zero.')
                     continue
                 break  
-
+            
+            while True:
+                allergen_text = input('Allergens of the dish (comma separated, or none): ')
+                valid, invalid = allergens.parse_allergies(allergen_text)
+                if len(invalid) > 0:
+                    print(invalid)
+                    print(allergens.OFFICIAL_ALLERGENS)
+                    continue
+                else:
+                    break
+                
             is_new = restaurant_core.add_or_update_dish(restaurant, dish_name, price)
             if is_new:
                 print(f"'{dish_name}' added to the menu at {price}.")
             else:
                 print(f"'{dish_name}' was already on the menu. Price updated to {price}.")
+                
+            for dishes in restaurant['menu']:
+                if dishes.upper() == dish_name.upper():
+                    actual_dish_name = dishes
+                    break   
+                    
+            allergens.set_dish_allergens(restaurant['allergens'], actual_dish_name, valid)
+
 
             try:
                 json_io.save_menu(restaurant, restaurant_path)
@@ -210,15 +229,47 @@ def main():
             print('Menu:')
             for dish in restaurant['menu']:
                 print(f"  - {dish}: {restaurant['menu'][dish]}")
-
+                info = allergens.dish_allergens(restaurant['allergens'], dish)
+                if info is None:
+                    print('No allergen information')
+                elif len(info) == 0:
+                    print('No declared allergens')
+                else:
+                    print(info)
             print('Active tables:')
             if len(restaurant['tables']) == 0:
                 print('  There are no active tables.')
             for table in restaurant['tables']:
                 print(f"  Table {table['table_num']} - {table['customers']} customers - {table['status']} - orders: {table['orders']}")
+                table_allergies = table.get('allergies')
+                if table_allergies is None:
+                    print('Allergies not recorded yet')
+                else:
+                    print(table_allergies)
+        # Show dishes compatible with the customer's allergies
+        if option == 7:
+            if restaurant is None:
+                print('You must load the restaurant first')
+                continue
+            while True:# Ask for allergies and repeat until all names are valid
+                allergen_costumer = input('Allergens of the costumer (comma separated, or none): ')
+                valid, invalid = allergens.parse_allergies(allergen_costumer)
+                if len(invalid) > 0:
+                    print(invalid)
+                    print(allergens.OFFICIAL_ALLERGENS)
+                    continue
+                else:
+                    break
+           
+            valid_dishes = allergens.safe_dishes(restaurant['allergens'], restaurant['menu'], valid)
+            if len(valid_dishes) <= 0:
+                print('Sorry, there are no dishes available for you')
+            else:
+                for dishes in valid_dishes:
+                    print(dishes, restaurant['menu'][dishes])
 
         # User wants to exit and save the restaurant, also what to do in case of a writing error
-        if option == 7:
+        if option == 8:
             if restaurant is None:
                 break
             try:
