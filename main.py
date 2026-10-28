@@ -21,7 +21,7 @@ def main():
         print('6. Check status')
         print('7. Allergen menu')
         print('8. Exit')
-        # Limiting the answers to a number between 1 and 7 and defining what to do in case another number is typed
+        # Limiting the answers to a number between 1 and 8 and defining what to do in case another number is typed
         try:
             option = int(input('What do you choose?: '))
             if option < 1 or option > 8:
@@ -74,12 +74,15 @@ def main():
                 if not isinstance(group, dict):
                     valid_groups = False
                     break
-                customers = group.get('customers')
+                if 'customers' not in group:
+                    valid_groups = False
+                    break
+                customers = group['customers']
                 if type(customers) is not int or customers <= 0:
                     valid_groups = False
                     break
 
-            if not valid_groups:
+            if  valid_groups is False:
                 print('Each group must contain a positive whole number of customers.')
                 continue
 
@@ -195,7 +198,7 @@ def main():
                     break
                 
             is_new = restaurant_core.add_or_update_dish(restaurant, dish_name, price)
-            if is_new:
+            if is_new is True:
                 print(f"'{dish_name}' added to the menu at {price}.")
             else:
                 print(f"'{dish_name}' was already on the menu. Price updated to {price}.")
