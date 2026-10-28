@@ -122,8 +122,11 @@ def main():
             for dish in restaurant['menu']:
                 print(f"  - {dish}: {restaurant['menu'][dish]}")
             print("Each customer orders dish by dish and types 'done' when finished.")
-            restaurant_core.take_order(selected_table, restaurant['menu'], restaurant['allergens'])
-            print(f"Order taken for table {selected_table['table_num']}.")
+            taken = restaurant_core.take_order(selected_table, restaurant['menu'], restaurant['allergens'])
+            if taken is True:
+                print(f"Order taken for table {selected_table['table_num']}.")
+            else:
+                print('Nobody at this table can eat any dish of the current menu. The table stays seated.')
 
         # Charge and release a table that has already ordered
         if option == 4:
