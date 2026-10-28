@@ -62,17 +62,21 @@ def take_order(table,menu, allergen_info):
            else:
                dish_ask = str(input("You have to choose an option from the menu: "))
       orders.append(customer_orders)
-    
-    table["orders"] = orders  
-    table["allergies"] = all_allergies   
-    table["status"] = "ordered"
+    table["allergies"] = all_allergies
+    for order in orders: 
+        if len(order) > 0:
+            table["orders"] = orders
+            table["status"] = "ordered"
+            return True
+        
+    return False
 
 def calculate_bill(table,menu):
     bill = 0
     for customer_orders in table["orders"]:
         for dish in customer_orders: 
          bill = bill + menu[dish]
-    table["bill"] = bill
+    table["bill"] = round(bill, 2)
 
     return table["bill"]
 

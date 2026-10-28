@@ -1,12 +1,20 @@
 """Reading and writing the JSON files (restaurant data and group requests)."""
 import json
-
+import math
 
 def load_restaurant(path):
     """Read the restaurant JSON and return it ready for a new evening."""
     with open(path, "r", encoding="utf-8") as f:
         restaurant = json.load(f)
-
+    if not isinstance(restaurant, dict):
+        return None   
+    if ('name' not in restaurant or 'capacity' not in restaurant or 'max_tables' not in restaurant or 'menu' not in restaurant):
+        return None
+    if not isinstance(restaurant["menu"], dict):
+        return None 
+    for dish, price in restaurant["menu"].items():
+        if type(price) not in (int, float) or not math.isfinite(price) or price <= 0:
+            return None
     restaurant["tables"] = []
     restaurant["occupancy"] = 0
     restaurant["earnings"] = 0
