@@ -72,7 +72,7 @@ def calculate_bill(table,menu):
     for customer_orders in table["orders"]:
         for dish in customer_orders: 
          bill = bill + menu[dish]
-    table["bill"] = bill
+    table["bill"] = round(bill, 2)
 
     return table["bill"]
 
