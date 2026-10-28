@@ -36,8 +36,12 @@ def main():
         if option == 1:
             # Loading the restaurant and informing if there is any type of error
             try:
-                restaurant = json_io.load_restaurant(restaurant_path)
-                print('Restaurant loaded successfully')
+                loaded_restaurant = json_io.load_restaurant(restaurant_path)
+                if loaded_restaurant is None:
+                    print('Invalid restaurant data.')
+                else:
+                    restaurant = loaded_restaurant
+                    print('Restaurant loaded successfully')
             except FileNotFoundError:
                 print('Im sorry, we cannot find the file')    
             except json.JSONDecodeError:
