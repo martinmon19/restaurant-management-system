@@ -184,8 +184,23 @@ def main():
                     continue
                 break  
             
+            existing_name = None
+            for names in restaurant['menu']:
+                if dish_name.upper() == names.upper():
+                    existing_name = names
+                    break
+            keep_allergens = False                 
             while True:
-                allergen_text = input('Allergens of the dish (comma separated, or none): ')
+                if existing_name is not None:
+                    allergen_text = input('Allergens of the dish (comma separated, or none, Enter to keep the current ones): ')
+                    if allergen_text.strip() == '':
+                        keep_allergens = True
+                        break
+                else:
+                    allergen_text = input('Allergens of the dish (comma separated, or none): ') 
+                    if allergen_text.strip() == '':
+                        print("Please type the allergens, or 'none' if the dish has no allergens.")
+                        continue           
                 valid, invalid = allergens.parse_allergies(allergen_text)
                 if len(invalid) > 0:
                     print(invalid)
@@ -193,7 +208,6 @@ def main():
                     continue
                 else:
                     break
-                
             is_new = restaurant_core.add_or_update_dish(restaurant, dish_name, price)
             if is_new:
                 print(f"'{dish_name}' added to the menu at {price}.")
@@ -205,7 +219,8 @@ def main():
                     actual_dish_name = dishes
                     break   
                     
-            allergens.set_dish_allergens(restaurant['allergens'], actual_dish_name, valid)
+            if  keep_allergens is False:
+                allergens.set_dish_allergens(restaurant['allergens'], actual_dish_name, valid)
 
 
             try:
