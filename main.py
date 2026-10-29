@@ -8,9 +8,9 @@ import allergens
 
 # Run the main menu and coordinate the restaurant operations
 def main():
-    # Defining these two variables: option to select what to do and restaurant_path to simplify the path to the restaurant function
+    # Keep the menu selection and loaded restaurant state local to main.
     option = 0
-    restaurant_path = 'data/restaurant.json'
+    restaurant_path = None
     restaurant = None #Making sure the user presses 1.Load restaurant first
     while option != 8:
         print('1. Load restaurant')
@@ -34,13 +34,18 @@ def main():
         
         # Perform the action selected by the user
         if option == 1:
-            # Loading the restaurant and informing if there is any type of error
+            # Select a file; keep the current restaurant if the new load fails.
+            selected_path = input('Enter the restaurant file path (e.g. data/restaurant.json): ').strip()
+            if selected_path == '':
+                print('Please enter a restaurant file path.')
+                continue
             try:
-                loaded_restaurant = json_io.load_restaurant(restaurant_path)
+                loaded_restaurant = json_io.load_restaurant(selected_path)
                 if loaded_restaurant is None:
                     print('Invalid restaurant data.')
                 else:
                     restaurant = loaded_restaurant
+                    restaurant_path = selected_path
                     print('Restaurant loaded successfully')
             except FileNotFoundError:
                 print('Im sorry, we cannot find the file')    

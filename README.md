@@ -26,13 +26,15 @@ Open a terminal in the project folder and run:
 python main.py
 ```
 
-The application loads the restaurant from the fixed path:
+Choose **1 — Load restaurant** before using the other restaurant operations. The program asks for the restaurant JSON file path. For example:
 
 ```text
 data/restaurant.json
 ```
 
-Choose **1 — Load restaurant** before using the other restaurant operations.
+You can select another file by entering its relative or absolute path. Relative paths are resolved from the terminal's current folder. Paths containing spaces can be entered directly, without surrounding quotes.
+
+The path must not be blank. Once a restaurant loads successfully, menu and allergen changes are saved to that same file, including when the application exits. If another file cannot be loaded or fails validation, the current restaurant and its save path are preserved.
 
 ## Project structure
 
@@ -54,7 +56,7 @@ The `tables/` folder must be created locally if it is not present after cloning.
 
 | Option | Action |
 |---|---|
-| 1 | Load the restaurant and start a new evening |
+| 1 | Select a restaurant JSON file and load it with a new evening state |
 | 2 | Load incoming groups from a JSON file and attempt to seat each group |
 | 3 | Select a seated table and take its customers' orders |
 | 4 | Select an ordered table, charge it and release it |
@@ -230,7 +232,7 @@ It handles general menu input, table selection, group validation, dish input and
 - Bills use menu prices at charging time. Updating a price therefore affects active orders containing that dish.
 - Menu changes are saved immediately after option 5 and again when exiting.
 - Only restaurant configuration, menu and allergens persist. Tables, orders, occupancy and earnings restart from zero on loading.
-- Option 1 reloads the restaurant and resets the current evening.
+- Option 1 asks for a restaurant JSON path. A successful load resets the current evening and sets the file used for subsequent saves.
 - A table is chargeable only after at least one customer has ordered.
 
 ## Limitations
